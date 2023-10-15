@@ -1,4 +1,5 @@
-type InputFieldProps = {
+export type InputFieldProps = {
+    type: string
     fieldName: string
     onChange: (value: any) => void
 }
@@ -6,7 +7,7 @@ type InputFieldProps = {
 function InputField(props: InputFieldProps) {
     return (
         <>
-            <label htmlFor={props.fieldName}>{props.fieldName}</label><input name={props.fieldName}/>
+            <label htmlFor={props.fieldName}>{props.fieldName}</label><input type={props.type} name={props.fieldName}/>
         </>
     )
 }
