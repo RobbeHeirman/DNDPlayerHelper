@@ -3,7 +3,7 @@ import ReactDOM from 'react-dom/client'
 import Sheet from './sheet.tsx'
 
 ReactDOM.createRoot(document.getElementById('root')!).render(
-  <React.StrictMode>
-    <Sheet />
-  </React.StrictMode>,
+    <React.StrictMode>
+        <Sheet/>
+    </React.StrictMode>,
 )

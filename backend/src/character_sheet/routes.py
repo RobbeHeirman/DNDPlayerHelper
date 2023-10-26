@@ -2,7 +2,7 @@ from typing import List
 
 from fastapi import APIRouter
 
-import models.character_sheet as model
+import src.character_sheet.models.character_sheet as model
 
 router = APIRouter(
     prefix="/character_sheet"
