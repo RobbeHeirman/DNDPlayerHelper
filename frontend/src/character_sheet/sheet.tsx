@@ -1,11 +1,17 @@
-import '../style.css'
+import './style.css'
 import {useState} from "react";
 import CharacterSheetModel from "./models/character_sheet_model.ts";
 import TextInputField from "./components/text_input_field.tsx";
 
 function Sheet() {
 
-    const [characterSheet, setCharacterSheet]  = useState(new CharacterSheetModel(0))
+    const [characterSheet, setCharacterSheet]  = useState(new CharacterSheetModel({
+        id: 0,
+        character_name: "we",
+        level: 0,
+        class: "wow"
+    }
+    ))
     return (
         <form className="charsheet" id="root">
             <header>

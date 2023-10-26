@@ -24,3 +24,5 @@ dist-ssr
 *.sw?
 *.iml
 *.sqlite
+
+backend/static
