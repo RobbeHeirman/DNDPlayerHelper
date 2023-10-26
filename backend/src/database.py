@@ -1,29 +1,28 @@
-from sqlalchemy import create_engine, MetaData, CheckConstraint
-from sqlalchemy.orm import sessionmaker, declarative_base
-from sqlmodel import Session
+from typing import TypeVar
 
-engine = create_engine("sqlite:///../dndplayerhelper.sqlite", echo=True)
-def get_setssion():
-    return Session(engine)
-
-convention = {
-    "ix": "ix_%(column_0_label)s",
-    "uq": "uq_%(table_name)s_%(column_0_name)s",
-    "ck": "ck_%(table_name)s_%(constraint_name)s",
-    "fk": "fk_%(table_name)s_%(column_0_name)s_%(referred_table_name)s",
-    "pk": "pk_%(table_name)s",
-}
-metadata_obj = MetaData(naming_convention=convention)
-Base = declarative_base(metadata=metadata_obj)
+from sqlalchemy import create_engine
+from sqlmodel import Session, SQLModel
 
 
-def create_range_constraint(column_name: str, lower_bound: int, upper_bound: int) -> CheckConstraint:
-    """
-    Creates a CheckConstraint for given column name that numbers need to be between lower_bound and upper_bound
-    :param column_name: a string column name.
-    :param lower_bound: lower integer bound, lower bound of a range
-    :param upper_bound: a upper bound of a range
-    :return: representive check constraint
-    """
-    naming = f"{column_name}_[{lower_bound}, {upper_bound}]"
-    return CheckConstraint(f"{column_name} BETWEEN {lower_bound} AND {upper_bound}", name=naming)
+def get_session():
+    return Session(create_engine("sqlite:///../dndplayerhelper.sqlite", echo=True))
+
+
+class BaseRepository:
+    __model__ = SQLModel
+    T = TypeVar("T", bound=__model__)
+    U = TypeVar("U", bound=__model__)
+
+    @classmethod
+    def create(cls, data: U) -> T:
+        with get_session() as session:
+            db_sheet = cls.__model__.from_orm(data)
+            session.add(db_sheet)
+            session.commit()
+            session.refresh(db_sheet)
+            return db_sheet
+
+    @classmethod
+    def get_list(cls) -> [T]:
+        with get_session() as session:
+            return session.query(cls.__model__).all()

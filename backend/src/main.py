@@ -2,7 +2,7 @@ import uvicorn
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
-import routes
+import src.character_sheet.routes as char_sheet_routes
 
 origins = [
     "http://127.0.0.1:5173"
@@ -16,8 +16,7 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
-app.include_router(routes.router)
-
+app.include_router(char_sheet_routes.router)
 
 
 @app.get("/")

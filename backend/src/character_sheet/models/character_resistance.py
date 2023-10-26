@@ -2,7 +2,7 @@
 # from sqlalchemy.orm import Mapped
 #
 # from src.database import Base
-# import src.models.character_sheet as char_sheet
+# import src.character_sheet.models.character_sheet as char_sheet
 #
 #
 # class CharacterResistance(Base):
