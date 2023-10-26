@@ -1,9 +1,10 @@
 from sqlalchemy import create_engine, MetaData, CheckConstraint
 from sqlalchemy.orm import sessionmaker, declarative_base
-
+from sqlmodel import Session
 
 engine = create_engine("sqlite:///../dndplayerhelper.sqlite", echo=True)
-SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
+def get_setssion():
+    return Session(engine)
 
 convention = {
     "ix": "ix_%(column_0_label)s",

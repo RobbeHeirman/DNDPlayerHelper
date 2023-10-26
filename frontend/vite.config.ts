@@ -6,6 +6,6 @@ export default defineConfig({
   plugins: [react()],
 
   server: {
-    open: "../src/index.html"
+    open: "src/overview/overview.html"
   }
 })

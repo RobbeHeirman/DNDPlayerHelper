@@ -17,3 +17,7 @@ sqlmodel = "^0.0.8"
 [build-system]
 requires = ["poetry-core"]
 build-backend = "poetry.core.masonry.api"
+
+
+[tool.poetry.scripts]
+start = "src.main:start"

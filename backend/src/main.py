@@ -1,18 +1,34 @@
-from typing import Union
-
+import uvicorn
 from fastapi import FastAPI
+from fastapi.middleware.cors import CORSMiddleware
 
-from database import SessionLocal
+import routes
+
+origins = [
+    "http://127.0.0.1:5173"
+]
 
 app = FastAPI()
-db = SessionLocal()
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=origins,
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
+app.include_router(routes.router)
+
 
 
 @app.get("/")
-def read_root():
+def index():
     return {"Hello": "World"}
 
 
-@app.get("/items/{item_id}")
-def read_item(item_id: int, q: Union[str, None] = None):
-    return {"item_id": item_id, "q": q}
+def start():
+    """Launched with `poetry run start` at root level"""
+    uvicorn.run("src.main:app", host="localhost", port=8000, reload=True)
+
+
+if __name__ == "__main__":
+    start()
