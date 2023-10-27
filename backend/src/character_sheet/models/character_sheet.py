@@ -36,5 +36,5 @@ class CharacterSheet(CharacterSheetBase, table=True):
         return str(self.id)
 
 
-class CharacterSheetDao(database.BaseRepository):
+class CharacterSheetDao(database.BaseRepository[CharacterSheet]):
     __model__ = CharacterSheet
