@@ -1,0 +1,268 @@
+{
+  "openapi": "3.1.0",
+  "info": {
+    "title": "FastAPI",
+    "version": "0.1.0"
+  },
+  "paths": {
+    "/character_sheet/character_sheets": {
+      "get": {
+        "tags": [
+          "character_sheet"
+        ],
+        "summary": "Get Sheets",
+        "operationId": "get_sheets",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "items": {
+                    "$ref": "#/components/schemas/CharacterSheet"
+                  },
+                  "type": "array",
+                  "title": "Response Character Sheet-Get Sheets"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/character_sheet/create_sheet": {
+      "post": {
+        "tags": [
+          "character_sheet"
+        ],
+        "summary": "Create Sheet",
+        "description": "Creates a new empty character sheet. Can be optionally set with starting values from the CharacterSheetPostSchema.\n:param char_sheet: a character sheet with initial values or None.\n:return: values of a newly created character sheet.",
+        "operationId": "create_sheet",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "allOf": [
+                  {
+                    "$ref": "#/components/schemas/CharacterSheetPostSchema"
+                  }
+                ],
+                "title": "Char Sheet",
+                "default": {
+                  "character_name": "",
+                  "lvl": 1,
+                  "experience": 0,
+                  "strength": 10,
+                  "dexterity": 10,
+                  "intelligence": 10,
+                  "wisdom": 10,
+                  "charisma": 10
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CharacterSheet"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/": {
+      "get": {
+        "summary": "Index",
+        "operationId": "-index",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "CharacterSheet": {
+        "properties": {
+          "character_name": {
+            "type": "string",
+            "title": "Character Name",
+            "default": ""
+          },
+          "lvl": {
+            "type": "integer",
+            "maximum": 20.0,
+            "minimum": 1.0,
+            "title": "Lvl",
+            "default": 1
+          },
+          "experience": {
+            "type": "integer",
+            "minimum": 0.0,
+            "title": "Experience",
+            "default": 0
+          },
+          "strength": {
+            "type": "integer",
+            "minimum": 0.0,
+            "title": "Strength",
+            "default": 10
+          },
+          "dexterity": {
+            "type": "integer",
+            "minimum": 0.0,
+            "title": "Dexterity",
+            "default": 10
+          },
+          "intelligence": {
+            "type": "integer",
+            "minimum": 0.0,
+            "title": "Intelligence",
+            "default": 10
+          },
+          "wisdom": {
+            "type": "integer",
+            "minimum": 0.0,
+            "title": "Wisdom",
+            "default": 10
+          },
+          "charisma": {
+            "type": "integer",
+            "minimum": 0.0,
+            "title": "Charisma",
+            "default": 10
+          },
+          "id": {
+            "type": "integer",
+            "title": "Id"
+          }
+        },
+        "type": "object",
+        "title": "CharacterSheet"
+      },
+      "CharacterSheetPostSchema": {
+        "properties": {
+          "character_name": {
+            "type": "string",
+            "title": "Character Name",
+            "default": ""
+          },
+          "lvl": {
+            "type": "integer",
+            "maximum": 20.0,
+            "minimum": 1.0,
+            "title": "Lvl",
+            "default": 1
+          },
+          "experience": {
+            "type": "integer",
+            "minimum": 0.0,
+            "title": "Experience",
+            "default": 0
+          },
+          "strength": {
+            "type": "integer",
+            "minimum": 0.0,
+            "title": "Strength",
+            "default": 10
+          },
+          "dexterity": {
+            "type": "integer",
+            "minimum": 0.0,
+            "title": "Dexterity",
+            "default": 10
+          },
+          "intelligence": {
+            "type": "integer",
+            "minimum": 0.0,
+            "title": "Intelligence",
+            "default": 10
+          },
+          "wisdom": {
+            "type": "integer",
+            "minimum": 0.0,
+            "title": "Wisdom",
+            "default": 10
+          },
+          "charisma": {
+            "type": "integer",
+            "minimum": 0.0,
+            "title": "Charisma",
+            "default": 10
+          }
+        },
+        "type": "object",
+        "title": "CharacterSheetPostSchema"
+      },
+      "HTTPValidationError": {
+        "properties": {
+          "detail": {
+            "items": {
+              "$ref": "#/components/schemas/ValidationError"
+            },
+            "type": "array",
+            "title": "Detail"
+          }
+        },
+        "type": "object",
+        "title": "HTTPValidationError"
+      },
+      "ValidationError": {
+        "properties": {
+          "loc": {
+            "items": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "integer"
+                }
+              ]
+            },
+            "type": "array",
+            "title": "Location"
+          },
+          "msg": {
+            "type": "string",
+            "title": "Message"
+          },
+          "type": {
+            "type": "string",
+            "title": "Error Type"
+          }
+        },
+        "type": "object",
+        "required": [
+          "loc",
+          "msg",
+          "type"
+        ],
+        "title": "ValidationError"
+      }
+    }
+  }
+}
