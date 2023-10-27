@@ -1,7 +1,7 @@
 from src.util.decorators import make_fields_optional
 from sqlmodel import Field, SQLModel
 
-import database
+import src.database as database
 
 
 class CharacterSheetBase(SQLModel):
