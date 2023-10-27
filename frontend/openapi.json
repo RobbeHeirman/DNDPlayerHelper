@@ -4,6 +4,12 @@
     "title": "FastAPI",
     "version": "0.1.0"
   },
+  "servers": [
+    {
+      "url": "localhost:8000",
+      "description": "development"
+    }
+  ],
   "paths": {
     "/character_sheet/character_sheets": {
       "get": {

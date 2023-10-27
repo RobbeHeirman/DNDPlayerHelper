@@ -1,31 +1,32 @@
 import React, {useEffect, useState} from 'react'
 import ReactDOM from 'react-dom/client'
-import CharacterSheetModel, {
-    createRemoteSheet,
-    getRemoteSheetList
-} from "../models/character_sheet_model.ts";
+import {CharacterSheetService} from "../../client";
+import {CharacterSheet} from "../../client";
 
 
 function Overview() {
 
-    const [sheets, setSheet] = useState(new Array<CharacterSheetModel>());
+    const [sheets, setSheet] = useState(new Array<CharacterSheet>());
 
     function createNewSheet() {
-
-        createRemoteSheet().then(result => setSheet([...sheets, result]));
+        CharacterSheetService.createSheet().then(result => setSheet([...sheets, result]));
     }
 
 
     useEffect(() => {
-        getRemoteSheetList().then(value => setSheet(value))
+        CharacterSheetService.getSheets().then(value => setSheet(value))
     }, []);
     return (
         <>
             <button onClick={createNewSheet}>Create new sheet</button>
             <ul>
-                {sheets.map((value) => <li><a>{value.id} {value.character_name}</a></li>)}
+                {sheets.map((value) =>
+                    <li key={value.id}>
+                        <a href={`/character_sheet/html/detail.html?id=${value.id}`}>{value.id} {value.character_name}</a>
+                    </li>
+                )}
             </ul>
-            </>
+        </>
     )
 }
 

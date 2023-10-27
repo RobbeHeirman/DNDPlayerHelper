@@ -18,7 +18,7 @@ def custom_generate_unique_id(route: APIRoute):
     return f"{tag}-{route.name}"
 
 
-app = FastAPI(generate_unique_id_function=custom_generate_unique_id)
+app = FastAPI(servers=[{"url": "localhost:8000", "description": "development"}],generate_unique_id_function=custom_generate_unique_id)
 app.add_middleware(
     CORSMiddleware,
     allow_origins=origins,

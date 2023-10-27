@@ -26,7 +26,7 @@ def extract_open_api(args):
 def process_open_api(openapi_content):
     for path_data in openapi_content["paths"].values():
         for operation in path_data.values():
-            if not "tags" in operation.keys():
+            if "tags" not in operation.keys():
                 continue
             tag = operation["tags"][0]
             operation_id = operation["operationId"]
@@ -42,10 +42,8 @@ def main():
     extract_open_api(args)
     openapi = extract_open_api(args)
     openapi = process_open_api(openapi)
-
     with open(args.out, "w") as f:
         json.dump(openapi, f, indent=2)
-
     print(f"spec written to {args.out}")
 
 
