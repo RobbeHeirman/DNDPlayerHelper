@@ -3,7 +3,7 @@ import ReactDOM from 'react-dom/client'
 import CharacterSheetModel, {
     createRemoteSheet,
     getRemoteSheetList
-} from "../character_sheet/models/character_sheet_model.ts";
+} from "../models/character_sheet_model.ts";
 
 
 function Overview() {

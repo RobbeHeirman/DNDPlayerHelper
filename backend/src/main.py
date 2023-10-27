@@ -1,6 +1,7 @@
 import uvicorn
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.staticfiles import StaticFiles
 
 import src.character_sheet.routes as char_sheet_routes
 
@@ -17,6 +18,7 @@ app.add_middleware(
     allow_headers=["*"],
 )
 app.include_router(char_sheet_routes.router)
+app.mount("/", StaticFiles(directory="../static", html=True), name="static" )
 
 
 @app.get("/")

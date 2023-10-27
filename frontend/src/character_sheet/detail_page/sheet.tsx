@@ -1,7 +1,8 @@
 import './style.css'
-import {useState} from "react";
-import CharacterSheetModel from "./models/character_sheet_model.ts";
+import React, {useState} from "react";
+import CharacterSheetModel from "../models/character_sheet_model.ts";
 import TextInputField from "./components/text_input_field.tsx";
+import ReactDOM from "react-dom/client";
 
 function Sheet() {
 
@@ -47,4 +48,9 @@ function Sheet() {
     )
 }
 
-export default Sheet
+ReactDOM.createRoot(document.getElementById('root')!).render(
+    <React.StrictMode>
+        <Sheet/>
+    </React.StrictMode>,
+)
+
