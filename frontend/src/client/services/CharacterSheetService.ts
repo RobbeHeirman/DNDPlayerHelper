@@ -12,6 +12,27 @@ import { request as __request } from '../core/request';
 export class CharacterSheetService {
 
     /**
+     * Get Sheet
+     * @param sheetId 
+     * @returns any Successful Response
+     * @throws ApiError
+     */
+    public static getSheet(
+sheetId: number,
+): CancelablePromise<any> {
+        return __request(OpenAPI, {
+            method: 'GET',
+            url: '/character_sheet/{sheet_id}',
+            path: {
+                'sheet_id': sheetId,
+            },
+            errors: {
+                422: `Validation Error`,
+            },
+        });
+    }
+
+    /**
      * Get Sheets
      * @returns CharacterSheet Successful Response
      * @throws ApiError

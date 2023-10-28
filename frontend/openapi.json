@@ -11,6 +11,46 @@
     }
   ],
   "paths": {
+    "/character_sheet/{sheet_id}": {
+      "get": {
+        "tags": [
+          "character_sheet"
+        ],
+        "summary": "Get Sheet",
+        "operationId": "get_sheet",
+        "parameters": [
+          {
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "title": "Sheet Id"
+            },
+            "name": "sheet_id",
+            "in": "path"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/character_sheet/character_sheets": {
       "get": {
         "tags": [
