@@ -1,3 +1,5 @@
+import React, {useCallback} from "react";
+
 export type InputFieldProps = {
     type: string
     fieldName: string
@@ -5,9 +7,15 @@ export type InputFieldProps = {
 }
 
 function InputField(props: InputFieldProps) {
+    const fieldChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
+        e.preventDefault();
+        props.onChange(e.target.value);
+    }, []);
+
     return (
         <>
-            <label htmlFor={props.fieldName}>{props.fieldName}</label><input type={props.type} name={props.fieldName}/>
+            <label htmlFor={props.fieldName}>{props.fieldName}</label>
+            <input onChange={fieldChange} type={props.type} name={props.fieldName}/>
         </>
     )
 }

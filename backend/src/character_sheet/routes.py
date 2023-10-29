@@ -4,6 +4,7 @@ from fastapi import APIRouter
 from starlette.websockets import WebSocket
 
 import src.character_sheet.models.character_sheet as model
+from src.character_sheet.models.sheet_socket_message import SheetUpdateMessage
 
 MAIN_TAG = "character_sheet"
 router = APIRouter(
@@ -37,4 +38,5 @@ async def websocket_endpoint(websocket: WebSocket):
     await websocket.accept()
     while True:
         data = await websocket.receive_text()
-        await websocket.send_text(f"Message text was: {data}")
+        sheet_message = SheetUpdateMessage.parse_raw(data)
+        model.CharacterSheetDao.update_field(sheet_message.id, sheet_message.field, sheet_message.data)

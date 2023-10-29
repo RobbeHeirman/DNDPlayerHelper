@@ -1,7 +1,7 @@
-from src.util.decorators import make_fields_optional
 from sqlmodel import Field, SQLModel
 
 import src.database as database
+from src.util.decorators import make_fields_optional
 
 
 class CharacterSheetBase(SQLModel):
@@ -38,3 +38,10 @@ class CharacterSheet(CharacterSheetBase, table=True):
 
 class CharacterSheetDao(database.BaseRepository[CharacterSheet]):
     __model__ = CharacterSheet
+
+    @classmethod
+    def update_field(cls, pk: int, field: str, data):
+        with database.get_session() as session:
+            sheet = session.query(cls.__model__).get(pk)
+            setattr(sheet, field, data)
+            session.commit()
