@@ -1,32 +1,61 @@
-import {useCallback, useEffect} from 'react';
+import {useCallback, useEffect, useState} from 'react';
 import useWebSocket from 'react-use-websocket';
 import TextInputField from "./components/text_input_field.tsx";
+import {CharacterSheetService, CharacterSheet} from "../../client";
 
-const urlParams = new URLSearchParams(window.location.search);
-const sheet_id = parseInt(urlParams.get("id") || "0"); // TODO: Fix some handling if bad call
 
+export type SocketMessage = {
+    field: string,
+    data: string
+}
+
+export type MessageHandler = (message: SocketMessage) =>void
 export const Sheet = () => {
-    const {sendMessage, lastMessage} = useWebSocket('ws://localhost:8000/character_sheet/socket');
+    let characterSheet!: CharacterSheet;
+
+    const urlParams = new URLSearchParams(window.location.search);
+    const sheet_id = parseInt(urlParams.get("id") || "0"); // TODO: Fix some handling if bad call
+    const socketUrl = `ws://localhost:8000/character_sheet/socket/${sheet_id}`
+    const {sendMessage, lastMessage} = useWebSocket(socketUrl);
+
+    const [subscribers, setSubscribers] = useState<MessageHandler[]>([])
+    function setSubscriber(message: MessageHandler ) {
+        setSubscribers([...subscribers, message]);
+    }
+    useEffect(() => {
+        CharacterSheetService.getSheet(sheet_id).then(sheet => characterSheet = sheet);
+    }, []);
+
     useEffect(() => {
         if (lastMessage !== null) {
+            console.log(subscribers)
+            subscribers.forEach(subscriber => subscriber(JSON.parse(lastMessage.data)));
         }
     }, [lastMessage]);
 
     const updateDataFunctionFactory = useCallback(<T, >(field: String) => {
         return (data: T) => {
             sendMessage(JSON.stringify({
-                id: sheet_id,
                 field: field,
                 data: data
             }))
         }
     }, [])
 
+    function doSendMessage(message: SocketMessage){
+        sendMessage(JSON.stringify(message));
+    }
+
     return (
         <div>
             <div className="charsheet" id="root">
                 <header>
-                    <TextInputField fieldName={"Character Name"} onChange={updateDataFunctionFactory("character_name")}/>
+                    <TextInputField fieldName={"character_name"}
+                                    onChange={updateDataFunctionFactory("character_name")}
+                                    initialValue={characterSheet?.character_name || ''}
+                                    postCall={doSendMessage}
+                                    subscribersSet={setSubscriber}
+                    />
                 </header>
             </div>
         </div>

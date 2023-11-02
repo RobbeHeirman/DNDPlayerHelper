@@ -40,7 +40,7 @@ class CharacterSheetDao(database.BaseRepository[CharacterSheet]):
     __model__ = CharacterSheet
 
     @classmethod
-    def update_field(cls, pk: int, field: str, data):
+    async def update_field(cls, pk: int, field: str, data):
         with database.get_session() as session:
             sheet = session.query(cls.__model__).get(pk)
             setattr(sheet, field, data)

@@ -15,7 +15,7 @@ class BaseRepository(Generic[T]):
     __model__: Type[T] = SQLModel
 
     @classmethod
-    def create(cls: Type[T], data: SQLModel) -> T:
+    async def create(cls: Type[T], data: SQLModel) -> T:
         with get_session() as session:
             db_sheet = cls.__model__.from_orm(data)
             session.add(db_sheet)
@@ -24,11 +24,11 @@ class BaseRepository(Generic[T]):
             return db_sheet
 
     @classmethod
-    def get(cls: Type[T], obj_id: int) -> T:
+    async def get(cls: Type[T], obj_id: int) -> T:
         with get_session() as session:
             return session.query(cls).get(obj_id)
 
     @classmethod
-    def get_list(cls: T) -> [T]:
+    async def get_list(cls: T) -> [T]:
         with get_session() as session:
             return session.query(cls.__model__).all()
