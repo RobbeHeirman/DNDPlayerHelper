@@ -1,22 +1,24 @@
-import React, {useCallback} from "react";
+
 
 export type InputFieldProps = {
     type: string
     fieldName: string
-    onChange: (value: any) => void
     value: string
+    onChange: (event: any) => void
 }
 
 function InputField(props: InputFieldProps) {
-    const fieldChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
-        //e.preventDefault();
-        props.onChange(e.target.value);
-    }, []);
+    // const fieldChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
+    //     e.preventDefault();
+    //     props.onChange(e.target.value);
+    // }, []);
+    //
+
 
     return (
         <>
             <label htmlFor={props.fieldName}>{props.fieldName}</label>
-            <input onChange={fieldChange} type={props.type} name={props.fieldName} value={props.value}/>
+            <input key={props.value} onChange={props.onChange} type={props.type} name={props.fieldName} value={props.value}/>
         </>
     )
 }

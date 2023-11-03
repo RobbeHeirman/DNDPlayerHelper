@@ -24,9 +24,9 @@ class BaseRepository(Generic[T]):
             return db_sheet
 
     @classmethod
-    async def get(cls: Type[T], obj_id: int) -> T:
+    def get(cls: Type[T], obj_id: int) -> T:
         with get_session() as session:
-            return session.query(cls).get(obj_id)
+            return session.get(cls.__model__, obj_id)
 
     @classmethod
     async def get_list(cls: T) -> [T]:

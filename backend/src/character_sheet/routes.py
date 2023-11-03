@@ -5,7 +5,7 @@ from fastapi import APIRouter
 from starlette.websockets import WebSocket, WebSocketDisconnect
 
 import src.character_sheet.models.character_sheet as model
-from character_sheet.SocketManager import ConnectionManager, SheetUpdateMessage
+from src.character_sheet.SocketManager import ConnectionManager, SheetUpdateMessage
 
 MAIN_TAG = "character_sheet"
 router = APIRouter(
@@ -15,8 +15,8 @@ router = APIRouter(
 
 
 @router.get("/{sheet_id}")
-async def get_sheet(sheet_id: int):
-    return await model.CharacterSheetDao.get(sheet_id)
+def get_sheet(sheet_id: int):
+    return model.CharacterSheetDao.get(sheet_id)
 
 
 @router.get("/character_sheets")

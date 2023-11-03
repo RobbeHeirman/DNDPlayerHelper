@@ -1,5 +1,4 @@
-import InputField from "./input_field.tsx";
-import {useEffect, useState} from "react";
+import React, {useEffect, useState} from "react";
 import {MessageHandler, SocketMessage} from "../sheet.tsx";
 
 type TextInputFieldProps =  {
@@ -12,7 +11,6 @@ type TextInputFieldProps =  {
 
 export default function TextInputField(props: TextInputFieldProps) {
     const [value, setValue] = useState<string>(props.initialValue);
-
     useEffect(() => {
             const sub = (message: SocketMessage) => {
                 if(message.field === props.fieldName){
@@ -20,12 +18,17 @@ export default function TextInputField(props: TextInputFieldProps) {
                 }
             }
             props.subscribersSet(sub);
+            //setValue(props.initialValue)
 
     }, []);
 
-    function onChange(e: string) {
+    useEffect(() => {
+        setValue(props.initialValue)
+    }, [props.initialValue]);
+
+    function onChange(e: React.ChangeEvent<HTMLInputElement>) {
         //e.preventDefault();
-        const val = e
+        const val = e.target.value
         setValue(val);
         const message: SocketMessage =  {
             field: props.fieldName,
@@ -33,6 +36,5 @@ export default function TextInputField(props: TextInputFieldProps) {
         }
         props.postCall(message);
     }
-
-    return <InputField {...props} type={"text"} value={value} onChange={e =>onChange(e)}/>
+    return  <input type={"text"} value={value} onChange={e =>{onChange(e)}}/>
 }

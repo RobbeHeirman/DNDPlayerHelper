@@ -2,20 +2,22 @@ import {useCallback, useEffect, useState} from 'react';
 import useWebSocket from 'react-use-websocket';
 import TextInputField from "./components/text_input_field.tsx";
 import {CharacterSheetService, CharacterSheet} from "../../client";
+import axios from "axios";
 
+axios.defaults.baseURL = "localhost:8000"
 
 export type SocketMessage = {
     field: string,
     data: string
 }
 
-export type MessageHandler = (message: SocketMessage) =>void
+export type MessageHandler = (message: SocketMessage) => void
 export const Sheet = () => {
-    let characterSheet!: CharacterSheet;
+    const [initSheet, setInitSheet] = useState<CharacterSheet | null>(null)
 
     const urlParams = new URLSearchParams(window.location.search);
     const sheet_id = parseInt(urlParams.get("id") || "0"); // TODO: Fix some handling if bad call
-    const socketUrl = `ws://localhost:8000/character_sheet/socket/${sheet_id}`
+    const socketUrl = `ws://localhost:8000/character_sheet/socket/${sheet_id}` // TODO: Hardcoded url
     const {sendMessage, lastMessage} = useWebSocket(socketUrl);
 
     const [subscribers, setSubscribers] = useState<MessageHandler[]>([])
@@ -23,12 +25,11 @@ export const Sheet = () => {
         setSubscribers([...subscribers, message]);
     }
     useEffect(() => {
-        CharacterSheetService.getSheet(sheet_id).then(sheet => characterSheet = sheet);
+        CharacterSheetService.getSheet(sheet_id).then(sheet => setInitSheet(sheet));
     }, []);
 
     useEffect(() => {
         if (lastMessage !== null) {
-            console.log(subscribers)
             subscribers.forEach(subscriber => subscriber(JSON.parse(lastMessage.data)));
         }
     }, [lastMessage]);
@@ -52,7 +53,7 @@ export const Sheet = () => {
                 <header>
                     <TextInputField fieldName={"character_name"}
                                     onChange={updateDataFunctionFactory("character_name")}
-                                    initialValue={characterSheet?.character_name || ''}
+                                    initialValue={initSheet?.character_name || ''}
                                     postCall={doSendMessage}
                                     subscribersSet={setSubscriber}
                     />

@@ -9,7 +9,8 @@ from fastapi.staticfiles import StaticFiles
 import src.character_sheet.routes as char_sheet_routes
 
 origins = [
-    "http://127.0.0.1:5173"
+    "http://127.0.0.1:5173",
+    "http://localhost"
 ]
 
 
@@ -18,7 +19,7 @@ def custom_generate_unique_id(route: APIRoute):
     return f"{tag}-{route.name}"
 
 
-app = FastAPI(servers=[{"url": "localhost:8000", "description": "development"}],generate_unique_id_function=custom_generate_unique_id)
+app = FastAPI(servers=[{"url": "http://localhost:8000", "description": "development"}],generate_unique_id_function=custom_generate_unique_id)
 app.add_middleware(
     CORSMiddleware,
     allow_origins=origins,
