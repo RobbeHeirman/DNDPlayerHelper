@@ -1,7 +1,7 @@
 from sqlmodel import Field, SQLModel
 
-import src.database as database
-from src.util.decorators import make_fields_optional
+import src.core.database as database
+from src.core.models import BaseTableMixin, make_fields_optional
 
 
 class CharacterSheetBase(SQLModel):
@@ -24,13 +24,8 @@ class CharacterSheetPostSchema(CharacterSheetBase):
     pass
 
 
-class CharacterSheet(CharacterSheetBase, table=True):
+class CharacterSheet(CharacterSheetBase, BaseTableMixin):
     __tablename__ = "character_sheet"
-    id: int = Field(primary_key=True, default=None)
-
-    # Core info foreign character_sheet.models
-    # class_id: int = Field(ForeignKey(f"{Class.__tablename__}.id"))
-    # race_id: int = Field(ForeignKey(f"{Race.__tablename__}.id"))
 
     def __repr__(self):
         return str(self.id)

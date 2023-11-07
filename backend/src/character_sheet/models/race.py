@@ -1,10 +1,14 @@
-# from sqlalchemy.orm import Mapped, mapped_column
+# from pydantic.class_validators import Optional
+# from sqlmodel import Field
 #
-# from src.database import Base
+# from src.character_sheet.models.expansion import Expansion
+# from src.core.models import BaseModel
 #
 #
-# class Race(Base):
+# class Race(BaseModel):
 #     __tablename__ = "race"
 #
-#     id: Mapped[int] = mapped_column(primary_key=True)
-#     name: Mapped[str] = mapped_column()
+#     name: str = Field()
+#
+#     set: int = Field(foreign_key=Expansion.get_foreign_key_reference())
+#     parent_race: Optional[int] = Field(foreign_key=Expansion.get_foreign_key_reference())

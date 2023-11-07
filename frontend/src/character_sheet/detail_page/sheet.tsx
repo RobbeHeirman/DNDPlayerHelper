@@ -1,62 +1,74 @@
 import {useCallback, useEffect, useState} from 'react';
 import useWebSocket from 'react-use-websocket';
-import TextInputField from "./components/text_input_field.tsx";
-import {CharacterSheetService, CharacterSheet} from "../../client";
-import axios from "axios";
+import {CharacterSheet, CharacterSheetService, OpenAPI} from "../../client";
+import InputField from "./components/input_field.tsx";
+import './style.css'
+import ObserverManager from "../../core/ObserverManager.ts";
 
-axios.defaults.baseURL = "localhost:8000"
+function _getSheetId() {
+    const urlParams = new URLSearchParams(window.location.search);
+    return parseInt(urlParams.get("id") || "0"); // TODO: Fix some handling if bad call
+}
 
 export type SocketMessage = {
-    field: string,
+    // Socket will always send data about one of the character fields
+    field: keyof CharacterSheet,
     data: string
 }
 
 export type MessageHandler = (message: SocketMessage) => void
+const broadCast: ObserverManager<SocketMessage> = new ObserverManager();
 export const Sheet = () => {
+
     const [initSheet, setInitSheet] = useState<CharacterSheet | null>(null)
 
-    const urlParams = new URLSearchParams(window.location.search);
-    const sheet_id = parseInt(urlParams.get("id") || "0"); // TODO: Fix some handling if bad call
-    const socketUrl = `ws://localhost:8000/character_sheet/socket/${sheet_id}` // TODO: Hardcoded url
+    // Set up a websocket connection
+    const sheet_id = _getSheetId();
+    const socketUrl = `${OpenAPI.BASE.replace("http", "ws")}/character_sheet/socket/${sheet_id}`
     const {sendMessage, lastMessage} = useWebSocket(socketUrl);
 
-    const [subscribers, setSubscribers] = useState<MessageHandler[]>([])
-    function setSubscriber(message: MessageHandler ) {
-        setSubscribers([...subscribers, message]);
-    }
     useEffect(() => {
+        // TODO: Handle failed fetch
         CharacterSheetService.getSheet(sheet_id).then(sheet => setInitSheet(sheet));
     }, []);
 
     useEffect(() => {
         if (lastMessage !== null) {
-            subscribers.forEach(subscriber => subscriber(JSON.parse(lastMessage.data)));
+            broadCast.broadcast(JSON.parse(lastMessage.data))
         }
     }, [lastMessage]);
 
-    const updateDataFunctionFactory = useCallback(<T, >(field: String) => {
-        return (data: T) => {
-            sendMessage(JSON.stringify({
-                field: field,
-                data: data
-            }))
-        }
-    }, [])
+    const doSendMessage = useCallback(
+        (message: SocketMessage) => sendMessage(JSON.stringify(message)),
+        []
+    );
 
-    function doSendMessage(message: SocketMessage){
-        sendMessage(JSON.stringify(message));
-    }
+    const fieldFactory = useCallback((type: string, displayName: string, fieldName: keyof CharacterSheet) =>
+         InputField<string | number>({
+            displayName: displayName,
+            type: type,
+            initialValue: initSheet?.[fieldName]?? "",
+            fieldName: fieldName,
+            observer: broadCast,
+            onChange: doSendMessage
+        })
+    , [initSheet])
 
     return (
         <div>
             <div className="charsheet" id="root">
                 <header>
-                    <TextInputField fieldName={"character_name"}
-                                    onChange={updateDataFunctionFactory("character_name")}
-                                    initialValue={initSheet?.character_name || ''}
-                                    postCall={doSendMessage}
-                                    subscribersSet={setSubscriber}
-                    />
+                    <section className="charname">
+                        {fieldFactory("text", "Character Name", "character_name")}
+                    </section>
+                    <section className="misc">
+                        <ul>
+                            <li>
+                                // TODO: Race in the backend.
+                                {fieldFactory('text', 'Race', 'race')}
+                            </li>
+                        </ul>
+                    </section>
                 </header>
             </div>
         </div>
