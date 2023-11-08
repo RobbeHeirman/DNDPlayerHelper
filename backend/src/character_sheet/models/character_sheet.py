@@ -1,3 +1,5 @@
+from typing import Optional
+
 from sqlmodel import Field, SQLModel
 
 import src.core.database as database

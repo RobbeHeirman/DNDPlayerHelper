@@ -6,13 +6,14 @@ from sqlmodel import SQLModel, Field
 
 class _BaseTableMixinMeta(type(SQLModel)):
     def __new__(cls, *args, **kwargs):
-        if args[0] != "BaseModel":
-            kwargs['table'] = True
+        if len(args[1]) > 1:
+            print(args)
+
         return type(SQLModel).__new__(cls, *args, **kwargs)
 
 
 class BaseTableMixin(SQLModel, metaclass=_BaseTableMixinMeta):
-    id: int = Field(primary_key=True, default=None)
+    id: Optional[int] = Field(primary_key=True, default=None)
 
     @property
     @abstractmethod

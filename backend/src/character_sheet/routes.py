@@ -21,17 +21,21 @@ def get_sheet(sheet_id: int):
 
 @router.get("/character_sheets")
 async def get_sheets() -> List[model.CharacterSheet]:
-    return await model.CharacterSheetDao.get_list()
+    return model.CharacterSheetDao.get_list()
 
 
 @router.post("/create_sheet")
-async def create_sheet(char_sheet: model.CharacterSheetPostSchema = model.CharacterSheetPostSchema()) -> model.CharacterSheet:
+def create_sheet(
+        char_sheet: model.CharacterSheetPostSchema = model.CharacterSheetPostSchema()) -> model.CharacterSheet:
     """
     Creates a new empty character sheet. Can be optionally set with starting values from the CharacterSheetPostSchema.
     :param char_sheet: a character sheet with initial values or None.
     :return: values of a newly created character sheet.
     """
-    return await model.CharacterSheetDao.create(char_sheet)
+
+    m = model.CharacterSheetDao.create(char_sheet)
+    print(m)
+    return m
 
 
 socket_manager = ConnectionManager()
