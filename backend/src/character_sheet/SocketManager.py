@@ -5,11 +5,16 @@ from starlette.websockets import WebSocket
 
 
 class SheetUpdateMessage(BaseModel):
+    # TODO: We may want to write a validator that checks if field is part of the SheetModel.
     field: str
     data: str
 
 
 class ConnectionManager:
+    """
+    Manages sheet connections.
+    A socket can be connected, disconnected and can broadcast messages through the manager.
+    """
     def __init__(self):
         self.active_connections: {int: [WebSocket]} = {}
 

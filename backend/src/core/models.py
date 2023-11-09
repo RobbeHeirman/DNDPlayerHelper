@@ -10,7 +10,7 @@ class _BaseTableMixinMeta(type(SQLModel)):
     Needed for SQLModel.
     """
     def __new__(cls, *args, **kwargs):
-        if len(args[1]) > 1:
+        if not args[1][0] == SQLModel:
             kwargs['table'] = True
         return type(SQLModel).__new__(cls, *args, **kwargs)
 

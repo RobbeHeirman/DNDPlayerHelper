@@ -46,9 +46,12 @@ async def websocket_endpoint(websocket: WebSocket, sheet_id: int):
         while True:
             data = await websocket.receive_text()
             sheet_message = SheetUpdateMessage.parse_raw(data)
+            # TODO: We may want to keep our db session open?
+            # TODO: Update and broadcast should be atomic?
             update = model.CharacterSheetDao.update_field(sheet_id, sheet_message.field, sheet_message.data)
             broadcast = socket_manager.broadcast(sheet_message, sheet_id, websocket)
             await asyncio.gather(update, broadcast)
     except WebSocketDisconnect:
         socket_manager.disconnect(websocket, sheet_id)
+        # TODO: We have to provide a logger.
         print("Socket disconnected")
