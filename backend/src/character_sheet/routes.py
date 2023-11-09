@@ -20,7 +20,7 @@ def get_sheet(sheet_id: int):
 
 
 @router.get("/character_sheets")
-async def get_sheets() -> List[model.CharacterSheet]:
+def get_sheets() -> List[model.CharacterSheet]:
     return model.CharacterSheetDao.get_list()
 
 
@@ -33,9 +33,7 @@ def create_sheet(
     :return: values of a newly created character sheet.
     """
 
-    m = model.CharacterSheetDao.create(char_sheet)
-    print(m)
-    return m
+    return model.CharacterSheetDao.create(char_sheet)
 
 
 socket_manager = ConnectionManager()
@@ -47,7 +45,6 @@ async def websocket_endpoint(websocket: WebSocket, sheet_id: int):
     try:
         while True:
             data = await websocket.receive_text()
-            print(data)
             sheet_message = SheetUpdateMessage.parse_raw(data)
             update = model.CharacterSheetDao.update_field(sheet_id, sheet_message.field, sheet_message.data)
             broadcast = socket_manager.broadcast(sheet_message, sheet_id, websocket)

@@ -1,27 +1,35 @@
+import abc
 from typing import TypeVar, Generic, Type
 
 from sqlalchemy import create_engine
-from sqlalchemy.ext.asyncio import create_async_engine
-from sqlmodel import Session, SQLModel
+from sqlalchemy.ext.asyncio import AsyncSession, create_async_engine
+from sqlalchemy.orm import sessionmaker
+from sqlmodel import SQLModel
 
 T = TypeVar("T", bound=SQLModel)
 
+_CONNECTION_PARAMS = {
+    'url': "sqlite+aiosqlite:///../dndplayerhelper.sqlite",
+    'echo': True
+}
+
 
 class BaseRepository(Generic[T]):
-    _CONNECTION_PARAMS = {
-        'url': "sqlite:///../dndplayerhelper.sqlite",
-        'echo': True
-    }
+    """
+    Base class to interact with the database.
+    __model__ prop should be set. This is the model the Child Repository will interact on.
 
-    __model__: Type[T] = SQLModel
+    """
+    get_session = sessionmaker(create_engine("sqlite:///../dndplayerhelper.sqlite", echo=True))
+    get_async_session = sessionmaker(
+        create_async_engine("sqlite+aiosqlite:///../dndplayerhelper.sqlite", echo=True),
+        class_=AsyncSession
+    )
 
-    @staticmethod
-    def get_session():
-        return Session(create_engine("sqlite:///../dndplayerhelper.sqlite", echo=True))
-
-    @staticmethod
-    def get_async_session():
-        return Session(create_async_engine(**BaseRepository._CONNECTION_PARAMS))
+    @property
+    @abc.abstractmethod
+    def __model__(self) -> Type[T]:
+        ...
 
     @classmethod
     def create(cls: Type[T], data: SQLModel) -> T:
@@ -30,6 +38,15 @@ class BaseRepository(Generic[T]):
             session.add(db_sheet)
             session.commit()
             session.refresh(db_sheet)
+            return db_sheet
+
+    @classmethod
+    async def create_aync(cls: Type[T], data: SQLModel):
+        async with cls.get_async_session() as conn:
+            db_sheet = cls.__model__.from_orm(data)
+            conn.add(db_sheet)
+            await conn.commit()
+            await conn.refresh(db_sheet)
             return db_sheet
 
     @classmethod

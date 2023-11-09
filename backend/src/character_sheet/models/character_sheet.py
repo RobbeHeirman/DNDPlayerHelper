@@ -1,5 +1,3 @@
-from typing import Optional
-
 from sqlmodel import Field, SQLModel
 
 import src.core.database as database
@@ -38,7 +36,7 @@ class CharacterSheetDao(database.BaseRepository[CharacterSheet]):
 
     @classmethod
     async def update_field(cls, pk: int, field: str, data):
-        with database.get_session() as session:
-            sheet = session.query(cls.__model__).get(pk)
+        async with cls.get_async_session() as session:
+            sheet = await session.get(cls.__model__, pk)
             setattr(sheet, field, data)
-            session.commit()
+            await session.commit()

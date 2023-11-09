@@ -5,14 +5,22 @@ from sqlmodel import SQLModel, Field
 
 
 class _BaseTableMixinMeta(type(SQLModel)):
+    """
+    Metaclass for our mixin. Makes sure to set table attribute to true.
+    Needed for SQLModel.
+    """
     def __new__(cls, *args, **kwargs):
         if len(args[1]) > 1:
-            print(args)
-
+            kwargs['table'] = True
         return type(SQLModel).__new__(cls, *args, **kwargs)
 
 
 class BaseTableMixin(SQLModel, metaclass=_BaseTableMixinMeta):
+    """
+    MixinClass to be used if one of our models is a table.
+    Enforces all our tables will have on int PK and tablename to be set.
+    Fill with util Methods.
+    """
     id: Optional[int] = Field(primary_key=True, default=None)
 
     @property
