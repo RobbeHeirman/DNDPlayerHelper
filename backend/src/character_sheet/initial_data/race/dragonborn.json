@@ -1,0 +1,56 @@
+[
+  {
+    "name": "Dragonborn",
+    "expansion": "Player Handbook"
+  },
+  {
+    "name": "Black Dragonborn",
+    "expansion": "Player Handbook",
+    "parent_race": "Dragonborn"
+  },
+  {
+    "name": "Blue Dragonborn",
+    "expansion": "Player Handbook",
+    "parent_race": "Dragonborn"
+  },
+  {
+    "name": "Brass Dragonborn",
+    "expansion": "Player Handbook",
+    "parent_race": "Dragonborn"
+  },
+  {
+    "name": "Bronze Dragonborn",
+    "expansion": "Player Handbook",
+    "parent_race": "Dragonborn"
+  },
+  {
+    "name": "Copper Dragonborn",
+    "expansion": "Player Handbook",
+    "parent_race": "Dragonborn"
+  },
+  {
+    "name": "Gold Dragonborn",
+    "expansion": "Player Handbook",
+    "parent_race": "Dragonborn"
+  },
+  {
+    "name": "Green Dragonborn",
+    "expansion": "Player Handbook",
+    "parent_race": "Dragonborn"
+  },
+  {
+    "name": "Red Dragonborn",
+    "expansion": "Player Handbook",
+    "parent_race": "Dragonborn"
+  },
+  {
+    "name": "Silver Dragonborn",
+    "expansion": "Player Handbook",
+    "parent_race": "Dragonborn"
+  },
+  {
+    "name": "White Dragonborn",
+    "expansion": "Player Handbook",
+    "parent_race": "Dragonborn"
+  }
+]

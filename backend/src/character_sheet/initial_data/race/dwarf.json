@@ -1,0 +1,16 @@
+[
+  {
+    "name": "Hill Dwarf",
+    "expansion": "Player Handbook",
+    "parent_race": "Dwarf"
+  },
+  {
+    "name": "Dwarf",
+    "expansion": "Player Handbook"
+  },
+  {
+    "name": "Mountain Dwarf",
+    "expansion": "Player Handbook",
+    "parent_race": "Dwarf"
+  }
+]

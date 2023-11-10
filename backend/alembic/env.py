@@ -8,33 +8,27 @@ from sqlalchemy import pool
 from sqlmodel import SQLModel
 
 
-def import_all_modules_in_models(root_package):
-    def scan_package(package_name):
-        package = importlib.import_module(package_name)
-        items = [os.path.join(package.__path__[0], item) for item in os.listdir(package.__path__[0])]
-        dirs = filter(lambda item: os.path.isdir(item), items)
-        print(list(dirs))
+def import_all_modules_in_models(package_name):
+    package = importlib.import_module(package_name)
+    for item in os.listdir(package.__path__[0]):
+        sub_item = os.path.join(package.__path__[0], item)
+        if not os.path.isdir(sub_item):
+            continue
 
-        for item in os.listdir(package.__path__[0]):
-
-            sub_item = os.path.join(package.__path__[0], item)
-            if os.path.isdir(sub_item):
-                if os.path.exists(os.path.join(sub_item, "models")):
-                    models_package_name = f"{package_name}.{item}.models"
-                    try:
-                        models_package = importlib.import_module(models_package_name)
-                        # Now, let's import all modules within the 'models' package
-                        for module in os.listdir(models_package.__path__[0]):
-                            if module.endswith(".py") and module != '__init__.py':
-                                module_name = module[:-3]  # Remove the '.py' extension
-                                module_full_name = f"{models_package_name}.{module_name}"
-                                importlib.import_module(module_full_name)
-                    except ModuleNotFoundError:
-                        pass  # Handle the case where the 'models' package doesn't exist in the subpackage.
-                else:
-                    scan_package(f"{package_name}.{item}")
-
-    scan_package(root_package)
+        if os.path.exists(os.path.join(sub_item, "models")):
+            models_package_name = f"{package_name}.{item}.models"
+            try:
+                models_package = importlib.import_module(models_package_name)
+                modules = filter(
+                    lambda file: file.endswith(".py") and file != '__init__.py',
+                    os.listdir(models_package.__path__[0])
+                )
+                for module in modules:
+                    importlib.import_module(f"{models_package_name}.{module[:-3]}")
+            except ModuleNotFoundError:
+                pass
+        else:
+            import_all_modules_in_models(f"{package_name}.{item}")
 
 
 # Replace 'your_root_package' with the root package name in your project

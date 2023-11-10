@@ -1,4 +1,5 @@
 import abc
+import os
 from typing import TypeVar, Generic, Type
 
 from sqlalchemy import create_engine
@@ -18,11 +19,12 @@ class BaseRepository(Generic[T]):
     """
     Base class to interact with the database.
     __model__ prop should be set. This is the model the Child Repository will interact on.
-
     """
-    get_session = sessionmaker(create_engine("sqlite:///../dndplayerhelper.sqlite", echo=True))
+    path = os.path.dirname(os.path.realpath(__file__))
+    path = os.path.join(path, "../../dndplayerhelper.sqlite")
+    get_session = sessionmaker(create_engine(f"sqlite:///{path}", echo=True))
     get_async_session = sessionmaker(
-        create_async_engine("sqlite+aiosqlite:///../dndplayerhelper.sqlite", echo=True),
+        create_async_engine(f"sqlite+aiosqlite:///{path}", echo=True),
         class_=AsyncSession
     )
 
