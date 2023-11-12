@@ -16,7 +16,7 @@ export type SocketMessage = {
     data: string
 }
 
-export type MessageHandler = (message: SocketMessage) => void
+
 const broadCast: ObserverManager<SocketMessage> = new ObserverManager();
 export const Sheet = () => {
 

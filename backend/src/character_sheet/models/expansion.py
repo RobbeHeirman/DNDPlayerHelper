@@ -1,9 +1,10 @@
 from sqlmodel import Field
 
-from src.core.models import BaseTableMixin
+import src.core.models as base_model
 
+print("Im ran twice?")
 
-class Expansion(BaseTableMixin):
+class Expansion(base_model.BaseTableMixin):
     __tablename__ = "expansion"
 
     name: str = Field()

@@ -1,27 +1,27 @@
 from abc import abstractmethod
 from typing import Optional, TypeVar
 
-from sqlmodel import SQLModel, Field
+import sqlmodel
 
 
-class _BaseTableMixinMeta(type(SQLModel)):
+class _BaseTableMixinMeta(type(sqlmodel.SQLModel)):
     """
     Metaclass for our mixin. Makes sure to set table attribute to true.
     Needed for SQLModel.
     """
     def __new__(cls, *args, **kwargs):
-        if not args[1][0] == SQLModel:
+        if not args[1][0] == sqlmodel.SQLModel:
             kwargs['table'] = True
-        return type(SQLModel).__new__(cls, *args, **kwargs)
+        return type(sqlmodel.SQLModel).__new__(cls, *args, **kwargs)
 
 
-class BaseTableMixin(SQLModel, metaclass=_BaseTableMixinMeta):
+class BaseTableMixin(sqlmodel.SQLModel, metaclass=_BaseTableMixinMeta):
     """
     MixinClass to be used if one of our models is a table.
     Enforces all our tables will have on int PK and tablename to be set.
     Fill with util Methods.
     """
-    id: Optional[int] = Field(primary_key=True, default=None)
+    id: Optional[int] = sqlmodel.Field(primary_key=True, default=None)
 
     @property
     @abstractmethod
@@ -29,7 +29,7 @@ class BaseTableMixin(SQLModel, metaclass=_BaseTableMixinMeta):
         ...
 
     @classmethod
-    def get_foreign_key_reference(cls: SQLModel):
+    def get_foreign_key_reference(cls: sqlmodel.SQLModel):
         return f"{cls.__tablename__}.id"
 
 
