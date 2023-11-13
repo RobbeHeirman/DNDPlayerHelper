@@ -9,9 +9,10 @@ from sqlmodel import SQLModel
 
 import src.character_sheet.models.expansion as expansion
 import src.character_sheet.models.race as race
+import src.character_sheet.models.damage_type as damage_type
 from src.core.database import BaseRepository
-from src.core.map import Map
-from src.core.models import BaseTableMixin
+from src.core.map import Map, ListMultiMap
+from src.core.models import BaseTableMixin, EntityTableMixin
 
 
 def read_json(filename: str):
@@ -26,7 +27,7 @@ def _truncate_table(session: Session, table: Type[BaseTableMixin]):
 
 
 def repopulate_table(json_lst: Iterable[Dict[str, str]], table: Type[BaseTableMixin], truncate=True):
-    records = list(map(lambda obj: table(**obj), json_lst))
+    records = map(lambda obj: table(**obj), json_lst)
     with BaseRepository.get_session(autocommit=False) as session:
         if truncate:
             _truncate_table(session, table)
@@ -52,15 +53,12 @@ def remap_foreign_key(json_lst: Iterable[Dict], column_name: str, table_to: type
         return nw_jsons
 
 
-def update_column(jsons: [{str, (str | int)}], column: [str], table: Type[BaseTableMixin]):
+def update_column(jsons: [{str, (str | int)}], column: [str], table: Type[EntityTableMixin]):
     # json_obj[column] is the new value of our table.
-    same_column_value = Map()
-
-    def callback(_):
-        return []
-
+    # We group all the same values to optimize. Preventing to update rows one by one.
+    same_column_value = ListMultiMap()
     for json_obj in jsons:
-        same_column_value.compute_if_absent(json_obj[column], callback).append(json_obj["name"])
+        same_column_value.add(json_obj[column], json_obj["name"])
 
     with BaseRepository.get_session(autocommit=False) as session:
         for key, val in same_column_value.items():
@@ -71,6 +69,11 @@ def update_column(jsons: [{str, (str | int)}], column: [str], table: Type[BaseTa
 def repopulate_expansions():
     json_lst = read_json("expansion.json")
     repopulate_table(json_lst, expansion.Expansion)
+
+
+def repopulate_damage_type():
+    json_lst = read_json("damage_type.json")
+    repopulate_table(json_lst, damage_type.DamageType)
 
 
 def repopulate_races():
