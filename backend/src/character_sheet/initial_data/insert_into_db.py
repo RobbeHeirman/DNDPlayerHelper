@@ -1,6 +1,8 @@
 import itertools
 import json
 import os
+from functools import partial
+from operator import is_not
 from typing import Type, Dict, Iterable
 
 from sqlalchemy import text
@@ -53,6 +55,19 @@ def remap_foreign_key(json_lst: Iterable[Dict], column_name: str, table_to: type
         return nw_jsons
 
 
+def remap_many_to_one(json_list: Iterable[Dict], column_name: str, table_to: type(SQLModel)):
+    found_objects = Map()
+    with BaseRepository.get_session(autocommit=False) as session:
+        callback = lambda key: session.query(table_to).filter(table_to.name == key).first()
+
+        def remap_json_obj(json_obj):
+            remap_key = lambda foreign_key: found_objects.compute_if_absent(foreign_key, callback)
+            json_obj[column_name] = list(filter(partial(is_not, None), map(remap_key, json_obj[column_name])))
+            return json_obj
+
+        return list(map(remap_json_obj, json_list))
+
+
 def update_column(jsons: [{str, (str | int)}], column: [str], table: Type[EntityTableMixin]):
     # json_obj[column] is the new value of our table.
     # We group all the same values to optimize. Preventing to update rows one by one.
@@ -80,6 +95,7 @@ def repopulate_races():
     files = map(lambda f: os.path.join("race", f), os.listdir('race'))
     jsons = itertools.chain(*map(read_json, files))
     jsons = remap_foreign_key(jsons, "expansion", expansion.Expansion)
+    jsons = remap_many_to_one(jsons, 'resistance', damage_type.DamageType)
 
     # Build initial table. Without Parent race relation
     repopulate_table(jsons, race.Race)

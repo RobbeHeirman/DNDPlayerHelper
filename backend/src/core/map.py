@@ -15,7 +15,7 @@ class Map(dict):
         """
         if key not in self.keys():
             self[key] = callback(key) if key_callback else callback()
-        return self[key]
+        return self.get(key, None)
 
 
 class ListMultiMap(Map):
