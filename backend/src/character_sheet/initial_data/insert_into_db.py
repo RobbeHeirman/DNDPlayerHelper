@@ -1,5 +1,7 @@
+import copy
 import itertools
 import json
+import operator
 import os
 from functools import partial
 from operator import is_not
@@ -29,6 +31,14 @@ def _truncate_table(session: Session, table: Type[BaseTableMixin]):
 
 
 def repopulate_table(json_lst: Iterable[Dict[str, str]], table: Type[BaseTableMixin], truncate=True):
+    """
+    Takes a list of jsons and saves them to given table. json keys need to map the given column
+
+    :param json_lst: Iterable of json objects with key vals that
+    :param table: table we want to insert in
+    :param truncate: boolean if we want to truncate te table before repopulating
+    :return:
+    """
     records = map(lambda obj: table(**obj), json_lst)
     with BaseRepository.get_session(autocommit=False) as session:
         if truncate:
@@ -38,6 +48,13 @@ def repopulate_table(json_lst: Iterable[Dict[str, str]], table: Type[BaseTableMi
 
 
 def remap_foreign_key(json_lst: Iterable[Dict], column_name: str, table_to: type(SQLModel)):
+    """
+    Maps name in foreign key to corresponding id
+    :param json_lst:
+    :param column_name:
+    :param table_to:
+    :return:
+    """
     foreign_objects = Map()
     nw_jsons = []
     with BaseRepository.get_session(autocommit=False) as session:
@@ -45,14 +62,13 @@ def remap_foreign_key(json_lst: Iterable[Dict], column_name: str, table_to: type
             return session.query(table_to).filter(table_to.name == key).first()
 
         for json_obj in json_lst:
+            nw_json = copy.deepcopy(json_obj)
             if not (n_key := json_obj.get(column_name, False)):
-                json_obj[column_name] = None
-                nw_jsons.append(json_obj)
-                continue
-            foreign_object = foreign_objects.compute_if_absent(n_key, compute_callback)
-            json_obj[column_name] = foreign_object.id
-            nw_jsons.append(json_obj)
-        return nw_jsons
+                nw_json[column_name] = None
+            else:
+                nw_json[column_name] = foreign_objects.compute_if_absent(n_key, compute_callback).id
+            nw_jsons.append(nw_json)
+    return nw_jsons
 
 
 def remap_many_to_one(json_list: Iterable[Dict], column_name: str, table_to: type(SQLModel)):
@@ -61,11 +77,13 @@ def remap_many_to_one(json_list: Iterable[Dict], column_name: str, table_to: typ
         callback = lambda key: session.query(table_to).filter(table_to.name == key).first()
 
         def remap_json_obj(json_obj):
+            if column_name not in json_obj.keys():
+                return json_obj
             remap_key = lambda foreign_key: found_objects.compute_if_absent(foreign_key, callback)
             json_obj[column_name] = list(filter(partial(is_not, None), map(remap_key, json_obj[column_name])))
             return json_obj
 
-        return list(map(remap_json_obj, json_list))
+        return list(filter(partial(operator.ne, None), map(remap_json_obj, json_list)))
 
 
 def update_column(jsons: [{str, (str | int)}], column: [str], table: Type[EntityTableMixin]):
@@ -106,6 +124,8 @@ def repopulate_races():
 
 
 def main():
+    repopulate_expansions()
+    repopulate_damage_type()
     repopulate_races()
 
 
