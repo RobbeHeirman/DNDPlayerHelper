@@ -1,0 +1,12 @@
+[
+  {
+    "name": "Dragonborn",
+    "expansion": "Player Handbook",
+    "strength_modifier": 2,
+    "charisma_modifier": 1,
+    "speed": 30,
+    "Size": "Medium",
+    "language": ["common", "draconic"],
+    "traits": ["Draconic Ancestry"]
+  }
+]

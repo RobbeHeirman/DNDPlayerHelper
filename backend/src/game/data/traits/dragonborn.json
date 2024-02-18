@@ -1,0 +1,182 @@
+[
+  {
+    "name": "Black Draconic Ancestry",
+    "expansion": "Player Handbook",
+    "description": "",
+    "traits": {
+      "resistance": {
+        "type" : "resistance",
+        "damage_type": "Acid"
+      },
+      "breath weapon": {
+        "type": "action",
+        "name": "Black Breath Weapon"
+      }
+    }
+  },
+  {
+    "name": "Blue Draconic Ancestry",
+    "expansion": "Player Handbook",
+    "description": "",
+    "traits": {
+      "resistance": {
+        "type" : "resistance",
+        "damage_type": "Lightning"
+      },
+      "breath weapon": {
+        "type": "action",
+        "name": "Blue Breath Weapon"
+      }
+    }
+  },
+
+  {
+    "name": "Brass Draconic Ancestry",
+    "expansion": "Player Handbook",
+    "description": "",
+    "traits": {
+      "resistance": {
+        "type" : "resistance",
+        "damage_type": "Fire"
+      },
+      "breath weapon": {
+        "type": "action",
+        "name": "Brass Breath Weapon"
+      }
+    }
+  },
+
+  {
+    "name": "Bronze Draconic Ancestry",
+    "expansion": "Player Handbook",
+    "description": "",
+    "traits": {
+      "resistance": {
+        "type" : "resistance",
+        "damage_type": "Lightning"
+      },
+      "breath weapon": {
+        "type": "action",
+        "name": "Bronze Breath Weapon"
+      }
+    }
+  },
+  {
+    "name": "Copper Draconic Ancestry",
+    "expansion": "Player Handbook",
+    "description": "",
+    "traits": {
+      "resistance": {
+        "type" : "resistance",
+        "damage_type": "Acid"
+      },
+      "breath weapon": {
+        "type": "action",
+        "name": "Copper Breath Weapon"
+      }
+    }
+  },
+
+  {
+    "name": "Gold Draconic Ancestry",
+    "expansion": "Player Handbook",
+    "description": "",
+    "traits": {
+      "resistance": {
+        "type" : "resistance",
+        "damage_type": "Fire"
+      },
+      "breath weapon": {
+        "type": "action",
+        "name": "Gold Breath Weapon"
+      }
+    }
+  },
+
+  {
+    "name": "Green Draconic Ancestry",
+    "expansion": "Player Handbook",
+    "description": "",
+    "traits": {
+      "resistance": {
+        "type" : "resistance",
+        "damage_type": "Poison"
+      },
+      "breath weapon": {
+        "type": "action",
+        "name": "Green Breath Weapon"
+      }
+    }
+  },
+
+  {
+    "name": "Red Draconic Ancestry",
+    "expansion": "Player Handbook",
+    "description": "",
+    "traits": {
+      "resistance": {
+        "type" : "resistance",
+        "damage_type": "Red"
+      },
+      "breath weapon": {
+        "type": "action",
+        "name": "Red Breath Weapon"
+      }
+    }
+  },
+  {
+    "name": "Silver Draconic Ancestry",
+    "expansion": "Player Handbook",
+    "description": "",
+    "traits": {
+      "resistance": {
+        "type" : "resistance",
+        "damage_type": "Cold"
+      },
+      "breath weapon": {
+        "type": "action",
+        "name": "Silver Breath Weapon"
+      }
+    }
+  },
+  {
+    "name": "White Draconic Ancestry",
+    "expansion": "Player Handbook",
+    "description": "",
+    "traits": {
+      "resistance": {
+        "type" : "resistance",
+        "damage_type": "Cold"
+      },
+      "breath weapon": {
+        "type": "action",
+        "name": "White Breath Weapon"
+      }
+    }
+  },
+
+
+
+  {
+    "name": "Draconic Ancestry",
+    "expansion": "Player Handbook",
+    "type": "collection",
+    "traits": {
+      "Draconic Ancestry": {
+        "type": "trait",
+        "value": [
+          "Black Draconic Ancestry",
+          "Blue Draconic Ancestry",
+          "Brass Draconic Ancestry",
+          "Bronze Draconic Ancestry",
+          "Copper Draconic Ancestry",
+          "Gold Draconic Ancestry",
+          "Green Draconic Ancestry",
+          "Red Draconic Ancestry",
+          "Silver Draconic Ancestry",
+          "White Draconic Ancestry"
+        ]
+      }
+    }
+  }
+]

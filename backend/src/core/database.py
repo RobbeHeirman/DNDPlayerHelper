@@ -5,7 +5,7 @@ from typing import TypeVar, Generic, Type
 from sqlalchemy import create_engine
 from sqlalchemy.ext.asyncio import AsyncSession, create_async_engine
 from sqlalchemy.orm import sessionmaker
-import sqlmodel
+
 
 T = TypeVar("T", bound=sqlmodel.SQLModel)
 

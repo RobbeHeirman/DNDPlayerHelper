@@ -1,37 +1,23 @@
 from abc import abstractmethod
 from typing import Optional, TypeVar, Type
 
-import sqlmodel
-from sqlmodel import Field
+from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column, DeclarativeMeta
 
 
-class _BaseTableMixinMeta(type(sqlmodel.SQLModel)):
-    """
-    Metaclass for our mixin. Makes sure to set table attribute to true.
-    Needed for SQLModel.
-    """
-
-    def __new__(cls, *args, **kwargs):
-        if "table" not in kwargs:
-            kwargs['table'] = True
-        return super().__new__(cls, *args, **kwargs)
+class Base(DeclarativeBase):
+    pass
 
 
-class BaseTableMixin(sqlmodel.SQLModel, metaclass=_BaseTableMixinMeta, table=False):
+class BaseTableMixin(Base):
     """
     MixinClass to be used if one of our models is a table.
     Enforces all our tables will have on int PK and tablename to be set.
     Fill with util Methods.
     """
-    id: Optional[int] = sqlmodel.Field(primary_key=True, default=None)
-
-    @property
-    @abstractmethod
-    def __tablename__(self) -> str:
-        ...
+    id: Mapped[int] = mapped_column(primary_key=True)
 
     @classmethod
-    def get_foreign_key_reference(cls: sqlmodel.SQLModel):
+    def get_foreign_key_reference(cls: Base):
         return f"{cls.__tablename__}.id"
 
 
@@ -46,18 +32,18 @@ class EntityTableMixin(BaseTableMixin, table=False):
     def __tablename__(self) -> str:
         ...
 
-    name: str = sqlmodel.Field(unique=True, index=True)
+    name: Mapped[str] = mapped_column(unique=True, index=True)
 
 
 def RelationField(cls: Type[BaseTableMixin], **kwargs):
-    return Field(foreign_key=cls.get_foreign_key_reference(), **kwargs)
+    return mapped_column(foreign_key=cls.get_foreign_key_reference(), **kwargs)
 
 
 def base_relation_table_factory(table1: Type[BaseTableMixin],
                                 table2: Type[BaseTableMixin],
                                 relation1_args: dict | None = None,
                                 relation2_args: dict | None = None
-                                ) -> _BaseTableMixinMeta:
+                                ) -> DeclarativeMeta:
     if relation1_args is None:
         relation1_args = {}
 
@@ -76,7 +62,7 @@ def base_relation_table_factory(table1: Type[BaseTableMixin],
             f"{table1_name}_id": int,
             f"{table2_name}_id": int
         }}
-    return _BaseTableMixinMeta(class_name, bases, attributes, table=False)
+    return DeclarativeMeta(class_name, bases, attributes, table=False)
 
 
 T = TypeVar('T', bound=type)

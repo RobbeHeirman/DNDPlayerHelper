@@ -1,0 +1,45 @@
+[
+  {
+    "name": "Black Draconic Ancestry",
+    "expansion": "Player Handbook",
+    "description": "",
+    "traits": {
+      "resistance": {
+        "type" : "resistance",
+        "damage_type": "Acid"
+      }
+    }
+  },
+  {
+    "name": "Blue Draconic Ancestry",
+    "expansion": "Player Handbook",
+    "description": ""
+  },
+  {
+    "name": "Brass Draconic Ancestry",
+    "expansion": "Player Handbook",
+    "description": ""
+  },
+  {
+    "name": "Draconic Ancestry",
+    "expansion": "Player Handbook",
+    "type": "collection",
+    "traits": {
+      "Draconic Ancestry": {
+        "type": "trait",
+        "value": [
+          "Black Draconic Ancestry",
+          "Blue Draconic Ancestry",
+          "Brass Draconic Ancestry",
+          "Bronze Draconic Ancestry",
+          "Copper Draconic Ancestry",
+          "Gold Draconic Ancestry",
+          "Green Draconic Ancestry",
+          "Red Draconic Ancestry",
+          "Silver Draconic Ancestry",
+          "White Draconic Ancestry"
+        ]
+      }
+    }
+  }
+]
