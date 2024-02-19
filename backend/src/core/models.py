@@ -1,7 +1,7 @@
-from abc import abstractmethod
+from functools import reduce
 from typing import Optional, TypeVar, Type
 
-from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column, DeclarativeMeta
+from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column, DeclarativeMeta, declared_attr
 
 
 class Base(DeclarativeBase):
@@ -14,6 +14,17 @@ class BaseTableMixin(Base):
     Enforces all our tables will have on int PK and tablename to be set.
     Fill with util Methods.
     """
+    __abstract__ = True
+
+    @declared_attr
+    def __tablename__(cls):
+        result = cls.__name__[0].lower()
+        for letter in cls.__name__[1:]:
+            if letter.isupper():
+                result += "_"
+            result += letter.lower()
+        return result
+
     id: Mapped[int] = mapped_column(primary_key=True)
 
     @classmethod
@@ -21,16 +32,12 @@ class BaseTableMixin(Base):
         return f"{cls.__tablename__}.id"
 
 
-class EntityTableMixin(BaseTableMixin, table=False):
+class EntityTableMixin(BaseTableMixin):
     """
     Base model for all "static" entities withing DND.
     Those are informative tables that describe the game. And designed for mostly read operations.
     """
-
-    @property
-    @abstractmethod
-    def __tablename__(self) -> str:
-        ...
+    __abstract__ = True
 
     name: Mapped[str] = mapped_column(unique=True, index=True)
 

@@ -6,8 +6,9 @@ from sqlalchemy import create_engine
 from sqlalchemy.ext.asyncio import AsyncSession, create_async_engine
 from sqlalchemy.orm import sessionmaker
 
+from src.core.models import Base
 
-T = TypeVar("T", bound=sqlmodel.SQLModel)
+T = TypeVar("T", bound=Base)
 
 _CONNECTION_PARAMS = {
     'url': "sqlite+aiosqlite:///../dndplayerhelper.sqlite",
@@ -34,7 +35,7 @@ class BaseRepository(Generic[T]):
         ...
 
     @classmethod
-    def create(cls: Type[T], data: sqlmodel.SQLModel) -> T:
+    def create(cls: Type[T], data: Base) -> T:
         with cls.get_session() as session:
             db_sheet = cls.__model__.from_orm(data)
             session.add(db_sheet)
@@ -43,7 +44,7 @@ class BaseRepository(Generic[T]):
             return db_sheet
 
     @classmethod
-    async def create_aync(cls: Type[T], data: sqlmodel.SQLModel):
+    async def create_aync(cls: Type[T], data: Base):
         async with cls.get_async_session() as conn:
             db_sheet = cls.__model__.from_orm(data)
             conn.add(db_sheet)

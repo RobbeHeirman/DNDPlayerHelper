@@ -5,7 +5,8 @@ from logging.config import fileConfig
 from alembic import context
 from sqlalchemy import engine_from_config
 from sqlalchemy import pool
-from sqlmodel import SQLModel
+
+from src.core.models import Base
 
 
 def import_all_modules_in_models(package_name):
@@ -51,8 +52,8 @@ convention = {
     "fk": "fk_%(table_name)s_%(column_0_name)s_%(referred_table_name)s",
     "pk": "pk_%(table_name)s"
 }
-SQLModel.metadata.naming_convention = convention
-target_metadata = SQLModel.metadata
+
+target_metadata = Base.metadata
 
 
 # other values from the config, defined by the needs of env.py,
@@ -84,6 +85,20 @@ def run_migrations_offline() -> None:
 
     with context.begin_transaction():
         context.run_migrations()
+
+
+def run_migrations_online():
+    engine = engine_from_config(
+        config.get_section(config.config_ini_section), prefix='sqlalchemy.')
+
+    with engine.connect() as connection:
+        context.configure(
+            connection=connection,
+            target_metadata=target_metadata
+        )
+
+        with context.begin_transaction():
+            context.run_migrations()
 
 
 def run_migrations_online() -> None:
