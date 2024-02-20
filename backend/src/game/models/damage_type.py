@@ -1,5 +1,5 @@
-# import src.core.models as model
-#
-#
-# class DamageType(model.EntityTableMixin):
-#     __tablename__ = "damage_type"
+import src.game.models.game_entity as game_entity
+
+
+class DamageType(game_entity.GameEntity):
+    __tablename__ = "damage_type"

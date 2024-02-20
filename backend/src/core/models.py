@@ -1,7 +1,8 @@
 from functools import reduce
 from typing import Optional, TypeVar, Type
 
-from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column, DeclarativeMeta, declared_attr
+from sqlalchemy import ForeignKey
+from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column, DeclarativeMeta, declared_attr, relationship
 
 
 class Base(DeclarativeBase):
@@ -41,35 +42,34 @@ class EntityTableMixin(BaseTableMixin):
 
     name: Mapped[str] = mapped_column(unique=True, index=True)
 
-
 def RelationField(cls: Type[BaseTableMixin], **kwargs):
-    return mapped_column(foreign_key=cls.get_foreign_key_reference(), **kwargs)
+    return mapped_column(ForeignKey(cls.get_foreign_key_reference(), **kwargs))
 
 
-def base_relation_table_factory(table1: Type[BaseTableMixin],
-                                table2: Type[BaseTableMixin],
-                                relation1_args: dict | None = None,
-                                relation2_args: dict | None = None
-                                ) -> DeclarativeMeta:
-    if relation1_args is None:
-        relation1_args = {}
-
-    if relation2_args is None:
-        relation2_args = {}
-
-    table1_name = table1.__name__
-    table2_name = table2.__name__
-    class_name = f"{table1_name}{table2_name}Base"
-    bases = (BaseTableMixin,)
-    attributes = {
-        f"{table1_name}_id": RelationField(table1, **relation1_args),
-        f"{table2_name}_id": RelationField(table2, **relation2_args),
-
-        '__annotations__': {
-            f"{table1_name}_id": int,
-            f"{table2_name}_id": int
-        }}
-    return DeclarativeMeta(class_name, bases, attributes, table=False)
+# def base_relation_table_factory(table1: Type[BaseTableMixin],
+#                                 table2: Type[BaseTableMixin],
+#                                 relation1_args: dict | None = None,
+#                                 relation2_args: dict | None = None
+#                                 ) -> DeclarativeMeta:
+#     if relation1_args is None:
+#         relation1_args = {}
+#
+#     if relation2_args is None:
+#         relation2_args = {}
+#
+#     table1_name = table1.__name__
+#     table2_name = table2.__name__
+#     class_name = f"{table1_name}{table2_name}Base"
+#     bases = (BaseTableMixin,)
+#     attributes = {
+#         f"{table1_name}_id": RelationField(table1, **relation1_args),
+#         f"{table2_name}_id": RelationField(table2, **relation2_args),
+#
+#         '__annotations__': {
+#             f"{table1_name}_id": int,
+#             f"{table2_name}_id": int
+#         }}
+#     return DeclarativeMeta(class_name, bases, attributes, table=False)
 
 
 T = TypeVar('T', bound=type)
@@ -87,3 +87,5 @@ def make_fields_optional(cls: T) -> T:
         if key not in cls.__annotations__:
             cls.__annotations__[key] = Optional[val]
     return cls
+
+

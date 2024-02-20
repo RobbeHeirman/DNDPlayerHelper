@@ -1,16 +1,18 @@
-# from sqlalchemy import Column, String
-# from sqlalchemy_utils import ChoiceType
-# from sqlmodel import Enum, Field
-#
-# from src.core.models import EntityTableMixin
-#
-#
-# class ActionType(str, Enum):
-#     RACE = "race"
-#     CLASS = "class"
-#     spell = "spell"
-#
-#
-# class Action(EntityTableMixin):
-#     __tablename__ = "action"
-#     action_type: ActionType = Field(sa_column=Column(ChoiceType(ActionType, impl=String()), nullable=False))
+import enum
+
+from sqlalchemy import Enum
+from sqlalchemy.orm import Mapped, mapped_column
+import src.game.models.game_entity as game
+
+class ActionType(enum.Enum):
+    RACE = enum.auto()
+    CLASS = enum.auto()
+    SPELL = enum.auto()
+
+
+class Action(game.GameEntity):
+    description: Mapped[str] = mapped_column(default="")
+    action_type: Mapped[ActionType] = mapped_column(Enum(ActionType), nullable=False)
+
+    # damage_type =
+

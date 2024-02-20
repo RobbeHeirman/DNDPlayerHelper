@@ -33,7 +33,9 @@ def import_all_modules_in_models(package_name):
 
 
 # Replace 'your_root_package' with the root package name in your project
-import_all_modules_in_models('src')
+# import_all_modules_in_models('src')
+
+from src.game.models import *
 
 # this is the Alembic Config object, which provides
 # access to the values within the .ini file in use.
