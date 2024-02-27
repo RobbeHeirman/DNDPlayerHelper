@@ -9,7 +9,8 @@
     "Saving Throw": {
       "Type": "Dexterity",
       "Base": 8,
-      "Modifiers": ["Constitution", "Proficiency"],
+      "Proficiency": "true",
+      "Modifiers": ["Constitution"],
       "On Success": 0.5
     },
     "Damage": {

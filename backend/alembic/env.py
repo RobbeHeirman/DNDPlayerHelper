@@ -1,13 +1,14 @@
 import importlib
 import os
 from logging.config import fileConfig
+import alembic_postgresql_enum
+from src.game.models import *
 
 from alembic import context
-from sqlalchemy import engine_from_config, create_engine
-from sqlalchemy import pool
+from sqlalchemy import create_engine
 
-from src.core.models import Base
 from settings import settings
+from src.core.models import Base
 
 
 def import_all_modules_in_models(package_name):
@@ -35,8 +36,6 @@ def import_all_modules_in_models(package_name):
 
 # Replace 'your_root_package' with the root package name in your project
 # import_all_modules_in_models('src')
-
-from src.game.models import *
 
 # this is the Alembic Config object, which provides
 # access to the values within the .ini file in use.
