@@ -9,11 +9,8 @@ from typing import Type, Dict, Iterable
 
 from sqlalchemy import text
 from sqlalchemy.orm import Session
-from sqlmodel import SQLModel
 
-import src.character_sheet.models.expansion as expansion
-import src.character_sheet.models.race as race
-import src.character_sheet.models.damage_type as damage_type
+from game.models import expansion, damage_type, race
 from src.core.database import BaseRepository
 from src.core.map import Map, ListMultiMap
 from src.core.models import BaseTableMixin, EntityTableMixin
@@ -47,7 +44,7 @@ def repopulate_table(json_lst: Iterable[Dict[str, str]], table: Type[BaseTableMi
         session.commit()
 
 
-def remap_foreign_key(json_lst: Iterable[Dict], column_name: str, table_to: type(SQLModel)):
+def remap_foreign_key(json_lst: Iterable[Dict], column_name: str, table_to: type(BaseTableMixin)):
     """
     Maps name in foreign key to corresponding id
     :param json_lst:
@@ -71,7 +68,7 @@ def remap_foreign_key(json_lst: Iterable[Dict], column_name: str, table_to: type
     return nw_jsons
 
 
-def remap_many_to_one(json_list: Iterable[Dict], column_name: str, table_to: type(SQLModel)):
+def remap_many_to_one(json_list: Iterable[Dict], column_name: str, table_to: type(BaseTableMixin)):
     found_objects = Map()
     with BaseRepository.get_session(autocommit=False) as session:
         callback = lambda key: session.query(table_to).filter(table_to.name == key).first()
