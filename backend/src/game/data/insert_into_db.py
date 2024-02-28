@@ -16,10 +16,15 @@ from src.core.map import Map, ListMultiMap
 from src.core.models import BaseTableMixin, EntityTableMixin
 
 
-def read_json(filename: str):
+def read_json(filename: str) -> dict:
     with open(filename) as f:
         json_str = f.read()
     return json.loads(json_str)
+
+
+def get_jsons_from_directory(dir_path: str) -> list[dict]:
+    files = map(lambda f: os.path.join(dir_path, f), os.listdir(dir_path))
+    return [json for file in files for json in read_json(file)]
 
 
 def _truncate_table(session: Session, table: Type[BaseTableMixin]):
@@ -104,6 +109,10 @@ def repopulate_expansions():
 def repopulate_damage_type():
     json_lst = read_json("damage_type.json")
     repopulate_table(json_lst, damage_type.DamageType)
+
+
+def repopulate_action():
+    pass
 
 
 def repopulate_races():
